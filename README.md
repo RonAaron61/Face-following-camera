@@ -9,6 +9,8 @@ we don't have to make XML file containing features of a person's face. Then pyth
 
 - 2 Servo motor
 - webcam
+- Arduino
+- Computer
 
 ## How it went
 
