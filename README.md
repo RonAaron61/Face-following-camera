@@ -5,6 +5,8 @@ I'm using 2 servo motors for X and Y axis. When the camera not detecting any fac
 the person's face. For detecting a face I'm using Python with OpenCV and Mediapipe library because mediapipe already have a builtin function to detect face so
 we don't have to make XML file containing features of a person's face. Then python program will send the coordinates to Arduino to move the servos.
 
+Results: [Youtube](https://youtu.be/mI4-Z3ocw5Y?t=780)
+
 ## Components
 
 - 2 Servo motor
