@@ -123,3 +123,92 @@ if cv.waitKey(20) & 0xFF==ord('d'): #If 'd' is pressed then lopping break
 ## Arduino Code
 
 Arduino Code
+
+On the arduino code firstly whe declare some variable, including the width and height of the video resolution, then on the void setup ()
+we initialize servos pin and start position which is in the middle. On the void loop()
+
+```
+void loop()
+{
+  if(Serial.available() > 0) // If face is detected then get the coordinates
+  {
+    if(Serial.read() == 'X')
+    {
+      x_mid = Serial.parseInt();
+      if(Serial.read() == 'Y')
+      {
+       y_mid = Serial.parseInt();
+       Pos(x,y);
+      }
+    }
+  }
+  
+  else if(Serial.available() == 0){ //If face is not detected within 5 second then go to 0,0 position and search for the whole room
+    count += 1;
+    delay(1000);
+    
+    if (count > 5){
+      for (int i = xpos; i>=0; i-=5){
+        servoX.write(i);
+        delay(70);
+      }
+      for (int j = ypos; j>=70; j-=5){
+        servoY.write(j);
+        delay(90);
+      }
+      search(); //Search function
+    }
+  }
+}
+```
+
+If face is detected then we go to the pos() function, first we get the center coordinates of the face, and if the face is offset by 40px from the middle
+we will move by 1 degree to X or Y axis until the face is on the middle screen again
+
+```
+void Pos() 
+{
+    if (x_mid > ((width / 2) + 40)){
+      xpos -= angle;
+    }
+    else if (x_mid < ((width / 2) - 40)){
+      xpos += angle;
+    }
+    
+    if (y_mid < ((height / 2) - 40)){
+      ypos += angle;
+    }
+    else if (y_mid > ((height / 2) + 40)){
+      ypos -= angle;
+    }
+```
+
+if the servo degree is outside its range
+
+```
+    if (xpos >= 180){
+      xpos = 180;
+    }
+    else if (xpos <= 0){
+      xpos = 0;
+    }
+    
+    if (ypos >= 180){
+      ypos = 180;
+    }
+    else if (ypos <= 60){  //Supaya gak kepentok, jadinya min di 60
+      ypos = 60;
+    }
+```
+
+Move to the face coordinates
+
+```
+    servoX.write(xpos);
+    servoY.write(ypos);
+}
+```
+
+If no face is detected then we will go to the serach() function, where it will move both servos from 5-179 for the X-axis servo and 70-120 for
+the Y-axis servos, while also checking if there is any face detected, if no face is still detected until the end of each axis, then we will do the same
+backward, 
